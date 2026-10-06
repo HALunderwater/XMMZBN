@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小茂密开心起来 ❤️</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  background:linear-gradient(135deg,#ffd6e8,#ffc2d1,#ffb3c6,#e7c6ff);
+  background-size:300% 300%;animation:bgmove 12s ease infinite;
+  overflow:hidden;position:relative
+}
+@keyframes bgmove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.hb{position:fixed;font-size:20px;animation:floatUp linear infinite;user-select:none;pointer-events:none;opacity:0}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0);opacity:0}10%{opacity:.55}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+.card{background:rgba(255,255,255,.8);backdrop-filter:blur(8px);border-radius:28px;padding:40px 30px;text-align:center;box-shadow:0 20px 60px rgba(255,90,140,.28);max-width:92vw;position:relative;z-index:10}
+.emoji{font-size:64px;animation:bounce 1.6s infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.question{font-size:26px;font-weight:800;color:#d6336c;margin:14px 0 6px}
+.sub{color:#a3567c;margin-bottom:26px;font-size:15px}
+.pic{width:180px;height:180px;object-fit:cover;border-radius:16px;margin:8px auto;display:block;box-shadow:0 8px 20px rgba(0,0,0,.15);transition:opacity .3s}
+.pic[src=""]{display:none}
+.btns{display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.btn{border:none;cursor:pointer;border-radius:999px;font-weight:800;transition:all .25s ease;white-space:nowrap}
+.yes{background:linear-gradient(135deg,#ff5f9e,#ff2e88);color:#fff;font-size:18px;padding:14px 30px;box-shadow:0 8px 22px rgba(255,46,136,.45)}
+.no{background:#e9ecef;color:#6c757d;font-size:18px;padding:14px 28px;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.yes.full{position:fixed;left:0;top:0;width:100vw;height:100vh;border-radius:0;font-size:52px;z-index:60;background:linear-gradient(135deg,#ff5f9e,#ff2e88)}
+.success{display:none}
+.success.show{display:block}
+.big-emoji{font-size:92px}
+.success h1{font-size:34px;color:#d6336c;margin:12px 0}
+.success p{color:#a3567c;font-size:18px}
+.cf{position:fixed;top:-30px;font-size:26px;animation:fall linear forwards;pointer-events:none;z-index:99}
+@keyframes fall{0%{transform:translateY(-10vh) rotate(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="emoji">🥺</div>
+  <div class="question" id="q">我们好好的嘛</div>
+  <img id="pic" class="pic" src="" alt="">
+  <div class="sub" id="s">要怎么样都想要答应你的</div>
+  <div class="btns">
+    <button class="btn yes" id="yes">好一下 ❤️</button>
+    <button class="btn no" id="no">不和好 😤</button>
+  </div>
+</div>
+
+<div class="card success" id="success">
+  <div class="big-emoji">🎉</div>
+  <h1>和好成功！</h1>
+  <p>马上回来 宝宝 ❤️</p>
+  <p style="margin-top:10px"> 😘</p>
+</div>
+
+<script>
+(function(){
+  var hearts=['❤️','💖','💕','🌸','💗','✨'];
+  for(var i=0;i<22;i++){
+    var h=document.createElement('span');
+    h.className='hb';
+    h.textContent=hearts[Math.floor(Math.random()*hearts.length)];
+    h.style.left=(Math.random()*100)+'vw';
+    h.style.fontSize=(14+Math.random()*22)+'px';
+    h.style.animationDuration=(6+Math.random()*8)+'s';
+    h.style.animationDelay=(Math.random()*8)+'s';
+    document.body.appendChild(h);
+  }
+
+  var yes=document.getElementById('yes');
+  var no=document.getElementById('no');
+  var card=document.getElementById('card');
+  var success=document.getElementById('success');
+  var q=document.getElementById('q');
+  var s=document.getElementById('s');
+  var pic=document.getElementById('pic');
+
+  var yesFont=18, noFont=18, count=0;
+
+  var noTexts=['不和好 😤','真的不好一下？','再想想嘛 🥺','你确定吗？','别这样嘛… 😢','不和好我会哭的 😭','求求你啦 🙏','再给你一次机会～','真的忍心吗？','和好吧，好不好嘛～'];
+  var subs=['别不开心嘛。。','小八:或许让mmj回去说说清楚吧','小豆泥:mmj虽然很讨打但也还行吧','胖吉猫:是的喵 还是要好好的喵','黄色兔:可以把他骗进来那个 出出气','不理我就像是巧克力啊'];
+  var imgs=['','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2DkhkRujqtUMrUOL1I6U_DQLs0L7CootffNArcdFU3w&s','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRR-bD2vHGAkhaQFt3AeTAAB6yVhhkUlOVTsxLyYwvGTA&s','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjIwAXjIEwxIXL2ojjdpEG59c1_C8tF2wq4HcjFAd7Lg&s=10','https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXeL7s0r-f5XdABpZquEEUNttXVk7WxS9DNNPjKc2UKw&s',''];
+  if(imgs[0]) pic.src=imgs[0];
+
+  no.addEventListener('click', function(){
+    count++;
+    yesFont += 16;
+    yes.style.fontSize = yesFont + 'px';
+    yes.style.padding = Math.round(yesFont*0.72) + 'px ' + Math.round(yesFont*1.5) + 'px';
+    noFont = Math.max(7, noFont - 2);
+    no.style.fontSize = noFont + 'px';
+    no.style.padding = Math.round(noFont*0.6) + 'px ' + Math.round(noFont*1.1) + 'px';
+    no.textContent = noTexts[Math.min(count-1, noTexts.length-1)];
+    s.textContent = subs[Math.min(count-1, subs.length-1)];
+    pic.style.opacity = 0;
+    setTimeout(function(){
+      pic.src = imgs[Math.min(count-1, imgs.length-1)];
+      pic.style.opacity = 1;
+    }, 150);
+    q.textContent = (count>=3) ? '真的不和好吗？ 🥺' : '我们好好的嘛';
+    if(count>=8){ no.style.display='none'; }
+    if(count>=6){ yes.classList.add('full'); yes.textContent='好一下 ❤️'; }
+  });
+
+  yes.addEventListener('click', function(){
+    card.style.display='none';
+    success.classList.add('show');
+    var pieces=['🎉','❤️','💖','😘','💕','🌸','🎊','💗'];
+    for(var j=0;j<80;j++){
+      var c=document.createElement('span');
+      c.className='cf';
+      c.textContent=pieces[Math.floor(Math.random()*pieces.length)];
+      c.style.left=(Math.random()*100)+'vw';
+      c.style.fontSize=(18+Math.random()*26)+'px';
+      c.style.animationDuration=(2+Math.random()*3)+'s';
+      c.style.animationDelay=(Math.random()*1.5)+'s';
+      document.body.appendChild(c);
+      (function(el){ setTimeout(function(){ el.remove(); }, 6000); })(c);
+    }
+  });
+})();
+</script>
+</body>
+</html>
